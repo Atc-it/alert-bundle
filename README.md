@@ -2,11 +2,12 @@ AtcAlertBundle
 =============
 
 
-### What now?
+## What now?
 
 this bundle provides services to launch sms or email messages
+For sms it uses an api like the one provided by nexmo
 
-## Config
+### Config
 
     atc_alert:
         mail_from_default : "default@default.fr"
@@ -14,7 +15,7 @@ this bundle provides services to launch sms or email messages
         sms_key : "apiKey"
         sms_secret : "apiSecret"
 
-## add to kernel
+### add to kernel
 
     ...
     $bundles = array(
@@ -23,6 +24,6 @@ this bundle provides services to launch sms or email messages
     );
     ...
 
-### What in the future?
+## What in the future?
 
 this bundle is meant to provide a preprogrammed alert system working whith cron 
