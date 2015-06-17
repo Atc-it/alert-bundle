@@ -9,7 +9,7 @@ this bundle provides services to launch sms or email messages
 ## Config
 
     atc_alert:
-        mail_from_default : "martin@atc-it.fr"
+        mail_from_default : "default@default.fr"
         sms_url : "https://rest.nexmo.com/sms/json"
         sms_key : "apiKey"
         sms_secret : "apiSecret"
