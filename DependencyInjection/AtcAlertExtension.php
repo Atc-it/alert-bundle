@@ -24,5 +24,11 @@ class AtcAlertExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        
+        $container->setParameter('atc_alert.mail_from_default', $config['mail_from_default']);
+        $container->setParameter('atc_alert.sms_url', $config['sms_url']);
+        $container->setParameter('atc_alert.sms_key', $config['sms_key']);
+        $container->setParameter('atc_alert.sms_secret', $config['sms_secret']);
     }
 }
+

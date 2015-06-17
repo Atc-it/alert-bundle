@@ -4,6 +4,13 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="atc_alert.mail_from_default" />
+        <parameter key="atc_alert.sms_url" />
+        <parameter key="atc_alert.sms_key" />
+        <parameter key="atc_alert.sms_secret" />
+    </parameters>
+    
     <!--
     <services>
         <service id="atc_alert.example" class="Atc\Bundle\AlertBundle\Example">
@@ -16,10 +23,10 @@
     <services>
         <service id="atc_alert.sender" class="Atc\Bundle\AlertBundle\Service\Sender">
             <argument type="service" id="mailer" />
-            <argument>%mail_from_default%</argument>
-            <argument>%sms_url%</argument>
-            <argument>%sms_key%</argument>
-            <argument>%sms_secret%</argument>
+            <argument>%atc_alert.mail_from_default%</argument>
+            <argument>%atc_alert.sms_url%</argument>
+            <argument>%atc_alert.sms_key%</argument>
+            <argument>%atc_alert.sms_secret%</argument>
         </service>
     </services>
     

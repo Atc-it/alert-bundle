@@ -58,17 +58,18 @@ class Sender {
      * @param string $from (otional, if not uses default mail_from)
      */
     public function sendMail($to, $subject, $body, $from = null) {
+        
         if ($from === null) {
             $from = $this->mail_from;
         }
         $mail = Swift_Message::newInstance();
 
         $mail
-                ->setFrom($from)
-                ->setTo($to)
-                ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/html');
+            ->setFrom($from)
+            ->setTo($to)
+            ->setSubject($subject)
+            ->setBody($body)
+            ->setContentType('text/html');
 
         $this->mailer->send($mail);
     }
