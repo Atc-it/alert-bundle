@@ -14,6 +14,15 @@ this bundle provides services to launch sms or email messages
         sms_key : "apiKey"
         sms_secret : "apiSecret"
 
+## add to kernel
+
+    ...
+    $bundles = array(
+        ...
+        new Atc\Bundle\AlertBundle\AtcAlertBundle()
+    );
+    ...
+
 ### What in the future?
 
 this bundle is meant to provide a preprogrammed alert system working whith cron 
