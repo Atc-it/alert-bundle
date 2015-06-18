@@ -23,6 +23,7 @@
     <services>
         <service id="atc_alert.sender" class="Atc\Bundle\AlertBundle\Service\Sender">
             <argument type="service" id="mailer" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%atc_alert.mail_from_default%</argument>
             <argument>%atc_alert.sms_url%</argument>
             <argument>%atc_alert.sms_key%</argument>
