@@ -40,6 +40,7 @@ class AlertManager {
             $this->sendAlert($alert);
         }
         
+        $this->em->flush();
         return count($alerts);
     }
 
@@ -65,7 +66,6 @@ class AlertManager {
         $alert->setDate(new DateTime());
 
         $this->em->persist($alert);
-        $this->em->flush();
     }
 
     /**
