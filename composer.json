@@ -1,5 +1,5 @@
 {
-    "name": "atc/alertundle",
+    "name": "atc/alert-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "description": "Symfony AlertBundle",
