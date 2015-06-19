@@ -32,6 +32,10 @@ class AlertManager {
         $this->sender = $sender;
     }
 
+    /**
+     * fetch all non sent pending alerts and send them
+     * @return the number of sended alerts
+     */
     public function updateAlertes() {
         $alertRepo = $this->em->getRepository('AtcAlertBundle:Alert');
         $alerts = $alertRepo->findPending();
