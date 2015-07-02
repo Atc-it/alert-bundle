@@ -39,11 +39,11 @@ class AlertManager {
     public function updateAlertes() {
         $alertRepo = $this->em->getRepository('AtcAlertBundle:Alert');
         $alerts = $alertRepo->findPending();
-        
+
         foreach ($alerts as $alert) {
             $this->sendAlert($alert);
         }
-        
+
         $this->em->flush();
         return count($alerts);
     }
@@ -90,10 +90,9 @@ class AlertManager {
 
         if ($date == null) {
             $this->sendAlert($alert);
-        } else {
-            $this->em->persist($alert);
-            $this->em->flush();
         }
+        $this->em->persist($alert);
+        $this->em->flush();
     }
 
     /**
@@ -116,10 +115,9 @@ class AlertManager {
 
         if ($date == null) {
             $this->sendAlert($alert);
-        } else {
-            $this->em->persist($alert);
-            $this->em->flush();
         }
+        $this->em->persist($alert);
+        $this->em->flush();
     }
 
     /**
