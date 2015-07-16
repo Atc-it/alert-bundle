@@ -9,6 +9,7 @@
         <parameter key="atc_alert.sms_url" />
         <parameter key="atc_alert.sms_key" />
         <parameter key="atc_alert.sms_secret" />
+        <parameter key="atc_alert.mandrill_secret" />
     </parameters>
     
     <services>
@@ -19,6 +20,7 @@
             <argument>%atc_alert.sms_url%</argument>
             <argument>%atc_alert.sms_key%</argument>
             <argument>%atc_alert.sms_secret%</argument>
+            <argument>%atc_alert.mandrill_secret%</argument>
         </service>
     
         <service id="atc_alert.alert.manager" class="Atc\Bundle\AlertBundle\Manager\AlertManager">

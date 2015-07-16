@@ -6,6 +6,7 @@ use Atc\Bundle\AlertBundle\Entity\Alert;
 use Atc\Bundle\AlertBundle\Enum\AlertType;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Mandrill;
 use Swift_Mailer;
 use Swift_Message;
 
@@ -52,8 +53,14 @@ class Sender {
      */
     protected $sms_api_secret;
 
+    /**
+     * mandrill api secret
+     * @var string 
+     */
+    protected $mandrill_api_secret;
+
     function __construct(
-    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_api_url, $sms_api_key, $sms_api_secret
+    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_api_url, $sms_api_key, $sms_api_secret, $mandrill_api_secret
     ) {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -61,6 +68,7 @@ class Sender {
         $this->sms_api_url = $sms_api_url;
         $this->sms_api_key = $sms_api_key;
         $this->sms_api_secret = $sms_api_secret;
+        $this->mandrill_api_secret = $mandrill_api_secret;
     }
 
     /**
@@ -71,20 +79,38 @@ class Sender {
      * @param string $from (otional, if not uses default mail_from)
      */
     protected function sendMail($to, $subject, $body, $from = null) {
-
         if ($from === null) {
             $from = $this->mail_from;
         }
-        $mail = Swift_Message::newInstance();
 
-        $mail
-                ->setFrom($from)
-                ->setTo($to)
-                ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/html');
+        if (null === $this->mandrill_api_secret) {
 
-        $this->mailer->send($mail);
+            $mail = Swift_Message::newInstance();
+
+            $mail
+                    ->setFrom($from)
+                    ->setTo($to)
+                    ->setSubject($subject)
+                    ->setBody($body)
+                    ->setContentType('text/html');
+
+            $this->mailer->send($mail);
+        } else {
+
+            $mandrill = new Mandrill($this->mandrill_api_secret);
+            $message = array(
+                'html' => $body,
+                'subject' => $subject,
+                'from_email' => $from,
+                'to' => array(
+                    array(
+                        'email' => $to,
+                        'type' => 'to'
+                    )
+                )
+            );
+            $mandrill->messages->send($message, false, 'Main Pool');
+        }
     }
 
     /**
@@ -137,7 +163,5 @@ class Sender {
                 $alert->getToMail(), $alert->getSubject(), $alert->getBody(), $alert->getFromF()
         );
     }
-
-
 
 }

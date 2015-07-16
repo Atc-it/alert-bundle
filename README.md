@@ -14,6 +14,7 @@ For sms it uses an api like the one provided by nexmo
         sms_url : "https://rest.nexmo.com/sms/json"
         sms_key : "apiKey"
         sms_secret : "apiSecret"
+        mandrill_secret : "mandrillApikeyOrNulToUseShiftmail"
 
 ### add to kernel
 
