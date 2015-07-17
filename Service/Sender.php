@@ -18,7 +18,13 @@ use Swift_Message;
 class Sender {
 
     /**
-     * default sending from
+     * default sending mail from
+     * @var string 
+     */
+    protected $mail_from;
+
+    /**
+     * default sending sms from
      * @var string 
      */
     protected $mail_from;
@@ -60,11 +66,12 @@ class Sender {
     protected $mandrill_api_secret;
 
     function __construct(
-    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_api_url, $sms_api_key, $sms_api_secret, $mandrill_api_secret
+    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $mandrill_api_secret
     ) {
         $this->mailer = $mailer;
         $this->em = $em;
         $this->mail_from = $mail_from;
+        $this->sms_from = $mail_from;
         $this->sms_api_url = $sms_api_url;
         $this->sms_api_key = $sms_api_key;
         $this->sms_api_secret = $sms_api_secret;
@@ -121,7 +128,7 @@ class Sender {
      */
     protected function sendSmS($to, $body, $from = null) {
         if ($from === null) {
-            $from = $this->mail_from;
+            $from = $this->sms_from;
         }
 
         $curlUrl = $this->sms_api_url;

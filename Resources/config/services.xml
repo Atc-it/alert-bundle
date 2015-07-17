@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="atc_alert.mail_from_default" />
+        <parameter key="atc_alert.sms_from_default" />
         <parameter key="atc_alert.sms_url" />
         <parameter key="atc_alert.sms_key" />
         <parameter key="atc_alert.sms_secret" />
@@ -17,6 +18,7 @@
             <argument type="service" id="mailer" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%atc_alert.mail_from_default%</argument>
+            <argument>%atc_alert.sms_from_default%</argument>
             <argument>%atc_alert.sms_url%</argument>
             <argument>%atc_alert.sms_key%</argument>
             <argument>%atc_alert.sms_secret%</argument>

@@ -11,6 +11,7 @@ For sms it uses an api like the one provided by nexmo
 
     atc_alert:
         mail_from_default : "default@default.fr"
+        sms_from_default : "0102030405"
         sms_url : "https://rest.nexmo.com/sms/json"
         sms_key : "apiKey"
         sms_secret : "apiSecret"

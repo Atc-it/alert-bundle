@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface {
         $rootNode
             ->children()
                 ->scalarNode('mail_from_default')->end()
+                ->scalarNode('sms_from_default')->end()
                 ->scalarNode('sms_url')->end()
                 ->scalarNode('sms_key')->end()
                 ->scalarNode('sms_secret')->end()
