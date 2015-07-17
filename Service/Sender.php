@@ -27,7 +27,7 @@ class Sender {
      * default sending sms from
      * @var string 
      */
-    protected $mail_from;
+    protected $sms_from;
 
     /**
      * shiftmailer instance
