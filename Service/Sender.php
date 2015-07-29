@@ -138,7 +138,7 @@ class Sender {
             $from = $this->sms_from == null ? 'AlertBundle' : $this->sms_from;
         }
         
-        if ($this->sms_itn_prefix !== null) {
+        if ($this->sms_itn_prefix !== null && $to[0] === '0') {
             $to = substr_replace($to, $this->sms_itn_prefix, 0, 1);
         }
 
