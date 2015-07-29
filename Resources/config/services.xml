@@ -10,6 +10,7 @@
         <parameter key="atc_alert.sms_url" />
         <parameter key="atc_alert.sms_key" />
         <parameter key="atc_alert.sms_secret" />
+        <parameter key="atc_alert.sms_prefix" />
         <parameter key="atc_alert.mandrill_secret" />
     </parameters>
     
@@ -22,6 +23,7 @@
             <argument>%atc_alert.sms_url%</argument>
             <argument>%atc_alert.sms_key%</argument>
             <argument>%atc_alert.sms_secret%</argument>
+            <argument>%atc_alert.sms_prefix%</argument>
             <argument>%atc_alert.mandrill_secret%</argument>
         </service>
     

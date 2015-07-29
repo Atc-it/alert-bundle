@@ -30,6 +30,7 @@ class AtcAlertExtension extends Extension
         $container->setParameter('atc_alert.sms_url', $config['sms_url']);
         $container->setParameter('atc_alert.sms_key', $config['sms_key']);
         $container->setParameter('atc_alert.sms_secret', $config['sms_secret']);
+        $container->setParameter('atc_alert.sms_prefix', $config['sms_prefix']);
         $container->setParameter('atc_alert.mandrill_secret', $config['mandrill_secret']);
     }
 }

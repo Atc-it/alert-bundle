@@ -58,6 +58,12 @@ class Sender {
      * @var string 
      */
     protected $sms_api_secret;
+    
+    /**
+     * international préfix
+     * @var string 
+     */
+    protected $sms_itn_prefix;
 
     /**
      * mandrill api secret
@@ -66,7 +72,7 @@ class Sender {
     protected $mandrill_api_secret;
 
     function __construct(
-    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $mandrill_api_secret
+    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $sms_itn_prefix, $mandrill_api_secret
     ) {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -75,6 +81,7 @@ class Sender {
         $this->sms_api_url = $sms_api_url;
         $this->sms_api_key = $sms_api_key;
         $this->sms_api_secret = $sms_api_secret;
+        $this->sms_itn_prefix = $sms_itn_prefix;
         $this->mandrill_api_secret = $mandrill_api_secret;
     }
 
@@ -128,7 +135,11 @@ class Sender {
      */
     protected function sendSmS($to, $body, $from = null) {
         if ($from === null) {
-            $from = $this->sms_from;
+            $from = $this->sms_from == null ? 'AlertBundle' : $this->sms_from;
+        }
+        
+        if ($this->sms_itn_prefix !== null) {
+            $to = substr_replace($to, $this->sms_itn_prefix, 0, 1);
         }
 
         $curlUrl = $this->sms_api_url;
@@ -149,6 +160,8 @@ class Sender {
 
         $resp = curl_exec($curl);
         curl_close($curl);
+
+        return $resp;
     }
 
     /**
