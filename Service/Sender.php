@@ -116,6 +116,7 @@ class Sender {
                 'html' => $body,
                 'subject' => $subject,
                 'from_email' => $from,
+                'from_name' => $from,
                 'to' => array(
                     array(
                         'email' => $to,
