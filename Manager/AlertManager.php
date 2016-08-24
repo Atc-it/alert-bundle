@@ -11,19 +11,19 @@ use Doctrine\ORM\EntityManager;
 /**
  * Mange Alert Entity
  *
- * @author martin
+ * @author Augustin
  */
 class AlertManager {
 
     /**
      * the entity manager
-     * @var EntityManager 
+     * @var EntityManager
      */
     protected $em;
 
     /**
      * the Sender service
-     * @var Sender 
+     * @var Sender
      */
     protected $sender;
 

@@ -23,7 +23,7 @@ class UpdateCommand extends ContainerAwareCommand {
         $alertManager = $this->getContainer()->get('atc_alert.alert.manager');
         /* @var $alertManager AlertManager */
 
-        //$alertManager->createMailAlert('martin@atc-it.fr', 'TEST', 'test mail', null, new DateTime());
+        //$alertManager->createMailAlert('test@toto.fr', 'TEST', 'test mail', null, new DateTime());
         $count = $alertManager->updateAlertes();
 
         $output->writeln($count.' alerts sent...');

@@ -6,7 +6,7 @@ namespace Atc\Bundle\AlertBundle\Enum;
 /**
  * types of alert
  *
- * @author martin
+ * @author Augustin
  */
 abstract class AlertType {
     const MAIL = 'MAIL';
