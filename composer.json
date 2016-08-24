@@ -16,11 +16,11 @@
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "symfony/swiftmailer-bundle": "~2.3",
-        "mailjet/mailjet-apiv3-php": "dev-master"
+        "mailjet/mailjet-apiv3-php": "@dev"
     },
     "autoload": {
         "psr-0": { "Atc\\Bundle\\AlertBundle": "" }
     },
     "target-dir": "Atc/Bundle/AlertBundle",
-    "minimum-stability": "@dev"
+    "minimum-stability": "dev"
 }
