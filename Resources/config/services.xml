@@ -13,7 +13,7 @@
         <parameter key="atc_alert.sms_prefix" />
         <parameter key="atc_alert.mandrill_secret" />
     </parameters>
-    
+
     <services>
         <service id="atc_alert.sender" class="Atc\Bundle\AlertBundle\Service\Sender">
             <argument type="service" id="mailer" />
@@ -24,13 +24,14 @@
             <argument>%atc_alert.sms_key%</argument>
             <argument>%atc_alert.sms_secret%</argument>
             <argument>%atc_alert.sms_prefix%</argument>
-            <argument>%atc_alert.mandrill_secret%</argument>
+            <argument>%atc_alert.mailjet_public%</argument>
+            <argument>%atc_alert.mailjet_private%</argument>
         </service>
-    
+
         <service id="atc_alert.alert.manager" class="Atc\Bundle\AlertBundle\Manager\AlertManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="atc_alert.sender" />
         </service>
     </services>
-    
+
 </container>

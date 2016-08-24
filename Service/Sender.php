@@ -9,70 +9,77 @@ use Doctrine\ORM\EntityManager;
 use Mandrill;
 use Swift_Mailer;
 use Swift_Message;
+use Mailjet\Client as MailjetClient;
 
 /**
  * Sender provides sms and mail sending functions
  *
- * @author martin
+ * @author augustin
  */
 class Sender {
 
     /**
      * default sending mail from
-     * @var string 
+     * @var string
      */
     protected $mail_from;
 
     /**
      * default sending sms from
-     * @var string 
+     * @var string
      */
     protected $sms_from;
 
     /**
      * shiftmailer instance
-     * @var Swift_Mailee 
+     * @var Swift_Mailee
      */
     protected $mailer;
 
     /**
      * the entity manager
-     * @var EntityManager 
+     * @var EntityManager
      */
     protected $em;
 
     /**
      * nexmo api base url
-     * @var string 
+     * @var string
      */
     protected $sms_api_url;
 
     /**
      * nexmo api key
-     * @var string 
+     * @var string
      */
     protected $sms_api_key;
 
     /**
      * nexmo api secret
-     * @var string 
+     * @var string
      */
     protected $sms_api_secret;
-    
+
     /**
      * international préfix
-     * @var string 
+     * @var string
      */
     protected $sms_itn_prefix;
 
     /**
-     * mandrill api secret
-     * @var string 
+     * Mailjet api public key
+     * @var string
      */
-    protected $mandrill_api_secret;
+    protected $mailjet_api_public_key;
+
+    /**
+     * Mailjet api private key
+     * @var string
+     */
+    protected $mailjet_api_private_key;
 
     function __construct(
-    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $sms_itn_prefix, $mandrill_api_secret
+    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $sms_itn_prefix, $mailjet_api_public, $mailjet_api_private
     ) {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -82,7 +89,8 @@ class Sender {
         $this->sms_api_key = $sms_api_key;
         $this->sms_api_secret = $sms_api_secret;
         $this->sms_itn_prefix = $sms_itn_prefix;
-        $this->mandrill_api_secret = $mandrill_api_secret;
+        $this->mailjet_api_public_key = $mailjet_api_public;
+        $this->mailjet_api_private_key = $mailjet_api_private;
     }
 
     /**
@@ -97,7 +105,7 @@ class Sender {
             $from = $this->mail_from;
         }
 
-        if (null === $this->mandrill_api_secret) {
+        if (null === $this->mailjet_api_private_key || null === $this->mailjet_api_public_key) {
 
             $mail = Swift_Message::newInstance();
 
@@ -111,20 +119,18 @@ class Sender {
             $this->mailer->send($mail);
         } else {
 
-            $mandrill = new Mandrill($this->mandrill_api_secret);
-            $message = array(
-                'html' => $body,
-                'subject' => $subject,
-                'from_email' => $from,
-                'from_name' => $from,
-                'to' => array(
-                    array(
-                        'email' => $to,
-                        'type' => 'to'
-                    )
-                )
-            );
-            $mandrill->messages->send($message, false, 'Main Pool');
+            $mailjetClient = new MailjetClient($this->mailjet_api_public, $this->mailjet_api_private);
+
+            $message = [
+                'FromEmail' => $from,
+                'FromName' => $from,
+                'Subject' => $subject,
+                'Text-part' => $body,
+          //      'Html-part' => "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!",
+                'Recipients' => [['Email' => $to]]
+            ];
+
+            $response = $mailjetClient->post(Resources::$to, ['body' => $message]);
         }
     }
 
@@ -138,7 +144,7 @@ class Sender {
         if ($from === null) {
             $from = $this->sms_from == null ? 'AlertBundle' : $this->sms_from;
         }
-        
+
         if ($this->sms_itn_prefix !== null && $to[0] === '0') {
             $to = substr_replace($to, $this->sms_itn_prefix, 0, 1);
         }
