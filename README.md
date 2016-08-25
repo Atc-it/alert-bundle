@@ -68,4 +68,5 @@ Config
         sms_url : "https://rest.nexmo.com/sms/json"
         sms_key : "apiKey"
         sms_secret : "apiSecret"
-        mandrill_secret : "mandrillApikeyOrNulToUseShiftmail"
+        mailjet_public : "mailjetApikeyOrNulToUseShiftmail"
+        mailjet_private : "mailjetApikeyOrNulToUseShiftmail"

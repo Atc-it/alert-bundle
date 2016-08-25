@@ -27,7 +27,8 @@ class Configuration implements ConfigurationInterface {
                 ->scalarNode('sms_key')->end()
                 ->scalarNode('sms_secret')->end()
                 ->scalarNode('sms_prefix')->end()
-                ->scalarNode('mandrill_secret')->end()
+                ->scalarNode('mailjet_public')->end()
+                ->scalarNode('mailjet_private')->end()
             ->end();
 
 
