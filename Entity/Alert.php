@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Alert
  *
- * @ORM\Table()
+ * @ORM\Table(name="`atc_alert`")
  * @ORM\Entity(repositoryClass="Atc\Bundle\AlertBundle\Entity\AlertRepository")
  */
 class Alert
@@ -62,7 +62,7 @@ class Alert
      * @ORM\Column(name="type", type="string", length=32)
      */
     protected $type;
-    
+
     /**
      * @var string
      *
@@ -147,7 +147,7 @@ class Alert
     {
         return $this->type;
     }
-    
+
     function getDate() {
         return $this->date;
     }
@@ -168,4 +168,3 @@ class Alert
 
 
 }
-

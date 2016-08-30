@@ -1,4 +1,4 @@
-AtcAlertBundle
+.AtcAlertBundle
 =============
 
 
@@ -70,3 +70,24 @@ Config
         sms_secret : "apiSecret"
         mailjet_public : "mailjetApikeyOrNulToUseShiftmail"
         mailjet_private : "mailjetApikeyOrNulToUseShiftmail"
+
+
+Use it
+======
+
+```php
+<?php
+
+$this->get('atc_alert.alert.manager')->createMailAlert(
+        $email(),
+        $this->renderView('::_email.html.twig', array('foo' => $bar)),
+        $sujet,
+        $from = null,
+        $date = null
+);
+
+$this->get('atc_alert.alert.manager')->createSmsAlert($to, $body, $from = null, $date = null);
+
+$this->get('atc_alert.alert.manager')->createSmsMailAlert($toSms, $toMail, $body, $subject, $from = null, $date = null);
+
+```
