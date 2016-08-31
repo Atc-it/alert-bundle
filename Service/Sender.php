@@ -6,10 +6,10 @@ use Atc\Bundle\AlertBundle\Entity\Alert;
 use Atc\Bundle\AlertBundle\Enum\AlertType;
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use Mandrill;
 use Swift_Mailer;
 use Swift_Message;
 use Mailjet\Client as MailjetClient;
+use \Mailjet\Resources;
 
 /**
  * Sender provides sms and mail sending functions
@@ -79,7 +79,7 @@ class Sender {
     protected $mailjet_api_private_key;
 
     function __construct(
-    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $sms_itn_prefix, $mailjet_api_public, $mailjet_api_private
+    Swift_Mailer $mailer, EntityManager $em, $mail_from, $sms_from, $sms_api_url, $sms_api_key, $sms_api_secret, $sms_itn_prefix, $mailjet_api_public_key, $mailjet_api_private_key
     ) {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -89,8 +89,8 @@ class Sender {
         $this->sms_api_key = $sms_api_key;
         $this->sms_api_secret = $sms_api_secret;
         $this->sms_itn_prefix = $sms_itn_prefix;
-        $this->mailjet_api_public_key = $mailjet_api_public;
-        $this->mailjet_api_private_key = $mailjet_api_private;
+        $this->mailjet_api_public_key = $mailjet_api_public_key;
+        $this->mailjet_api_private_key = $mailjet_api_private_key;
     }
 
     /**
@@ -119,18 +119,17 @@ class Sender {
             $this->mailer->send($mail);
         } else {
 
-            $mailjetClient = new MailjetClient($this->mailjet_api_public, $this->mailjet_api_private);
-
+            $mailjetClient = new MailjetClient($this->mailjet_api_public_key, $this->mailjet_api_private_key);
             $message = [
                 'FromEmail' => $from,
                 'FromName' => $from,
                 'Subject' => $subject,
                 'Text-part' => $body,
-          //      'Html-part' => "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!",
+                'Html-part' => $body,
                 'Recipients' => [['Email' => $to]]
             ];
 
-            $response = $mailjetClient->post(Resources::$to, ['body' => $message]);
+            $response = $mailjetClient->post(Resources::$Email, ['body' => $message]);
         }
     }
 
