@@ -100,7 +100,7 @@ class Sender {
      * @param string $body
      * @param string $from (otional, if not uses default mail_from)
      */
-    protected function sendMail($to, $subject, $body, $from = null) {
+    public function sendMail($to, $subject, $body, $from = null) {
         if ($from === null) {
             $from = $this->mail_from;
         }

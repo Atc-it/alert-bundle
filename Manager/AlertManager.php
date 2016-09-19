@@ -119,6 +119,17 @@ class AlertManager {
         $this->em->persist($alert);
         $this->em->flush();
     }
+    
+    /**
+     * send imédiate mail without historize it
+     * @param type $to
+     * @param type $body
+     * @param type $subject
+     * @param type $from if null passed use default from configuration
+     */
+    public function sendMail($to, $body, $subject, $from = null) {
+        $this->sender->sendMail($to, $subject, $body, $from = null);
+    }
 
     /**
      * create a sms/mail alert
