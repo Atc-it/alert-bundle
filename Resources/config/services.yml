@@ -1,0 +1,58 @@
+services:
+    atc.alert.service.retarus_sms.sms_service:
+        class: Atc\AlertBundle\Service\RetarusSms\SmsService
+        arguments:
+            - '@atc.alert.service.retarus_sms.message_service'
+            - '@atc.alert.service.retarus_sms.options_service'
+            - '@atc.alert.service.retarus_sms.recipient_service'
+            - '@atc.alert.service.retarus_sms.send_job_request_service'
+            - '%atc_alert.retarus_soap_url%'
+
+    atc.alert.service.retarus_sms.message_service:
+        class: Atc\AlertBundle\Service\RetarusSms\MessageService
+
+    atc.alert.service.retarus_sms.options_service:
+        class: Atc\AlertBundle\Service\RetarusSms\OptionsService
+        arguments:
+            - '%atc_alert.retarus_source%'
+            - '%atc_alert.retarus_encoding%'
+            - '%atc_alert.retarus_bill_code%'
+            - '%atc_alert.retarus_status_requested%'
+            - '%atc_alert.retarus_flash%'
+            - '%atc_alert.retarus_validity_min%'
+            - '%atc_alert.retarus_max_parts%'
+            - '%atc_alert.retarus_qos%'
+
+    atc.alert.service.retarus_sms.recipient_service:
+        class: Atc\AlertBundle\Service\RetarusSms\RecipientService
+
+    atc.alert.service.retarus_sms.send_job_request_service:
+        class: Atc\AlertBundle\Service\RetarusSms\SendJobRequestService
+        arguments:
+            - '%atc_alert.retarus_username%'
+            - '%atc_alert.retarus_password%'
+
+    atc_alert.sender:
+        class: Atc\AlertBundle\Service\Sender
+        arguments:
+            - '@swiftmailer.mailer'
+            - '@doctrine.orm.entity_manager'
+            - '@atc.alert.service.retarus_sms.sms_service'
+            - '%atc_alert.mail_from_default%'
+            - '%atc_alert.sms_from_default%'
+            - '%atc_alert.sms_url%'
+            - '%atc_alert.sms_key%'
+            - '%atc_alert.sms_secret%'
+            - '%atc_alert.sms_prefix%'
+            - '%atc_alert.mailjet_public%'
+            - '%atc_alert.mailjet_private%'
+            - '%mailer_sender_name%'
+
+    atc_alert.alert.manager:
+        class: Atc\AlertBundle\Manager\AlertManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@atc_alert.sender'
+            - '@logger'
+        tags:
+            - { name: monolog.logger, channel: alert_messages }

@@ -1,148 +1,178 @@
 <?php
 
-namespace Atc\Bundle\AlertBundle\Manager;
+namespace Atc\AlertBundle\Manager;
 
-use Atc\Bundle\AlertBundle\Entity\Alert;
-use Atc\Bundle\AlertBundle\Enum\AlertType;
-use Atc\Bundle\AlertBundle\Service\Sender;
-use DateTime;
+use Atc\AlertBundle\Entity\Alert;
+use Atc\AlertBundle\Enum\AlertType;
+use Atc\AlertBundle\Service\Sender;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 
 /**
- * Mange Alert Entity
+ * Mange Alert Entity.
  *
  * @author Augustin
  */
-class AlertManager {
-
-    /**
-     * the entity manager
-     * @var EntityManager
-     */
+class AlertManager
+{
+    /** @var EntityManager  */
     protected $em;
-
-    /**
-     * the Sender service
-     * @var Sender
-     */
+    /** @var Sender  */
     protected $sender;
 
-    function __construct(EntityManager $em, Sender $sender) {
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * AlertManager constructor.
+     *
+     * @param EntityManager $em
+     * @param Sender $sender
+     * @param Logger $logger
+     */
+    public function __construct(EntityManager $em, Sender $sender, Logger $logger)
+    {
         $this->em = $em;
         $this->sender = $sender;
+        $this->logger = $logger;
     }
 
     /**
-     * fetch all non sent pending alerts and send them
-     * @return the number of sended alerts
+     * Fetch all non sent pending alerts and send them.
+     *
+     * @return int Number of sended alerts
      */
-    public function updateAlertes() {
+    public function updateAlerts()
+    {
         $alertRepo = $this->em->getRepository('AtcAlertBundle:Alert');
         $alerts = $alertRepo->findPending();
 
         foreach ($alerts as $alert) {
             $this->sendAlert($alert);
+            $alert->setSent(true);
+            $alert->setDate(new \DateTime());
+
+            $this->em->persist($alert);
         }
 
         $this->em->flush();
+
         return count($alerts);
     }
 
     /**
-     * sends an Alert
+     * sends an Alert.
+     *
      * @param Alert $alert
      */
-    public function sendAlert(Alert $alert) {
-        switch ($alert->getType()) {
-            case AlertType::MAIL :
-                $this->sender->sendMailAlert($alert);
-                break;
-            case AlertType::SMS :
-                $this->sender->sendSmsAlert($alert);
-                break;
-            case AlertType::SMS_MAIL :
-                $this->sender->sendSmsAlert($alert);
-                $this->sender->sendMailAlert($alert);
-                break;
+    public function sendAlert(Alert $alert)
+    {
+        try {
+            switch ($alert->getType()) {
+                case AlertType::MAIL:
+                    $this->sender->sendMailAlert($alert);
+                    break;
+                case AlertType::SMS:
+                    $this->sender->sendSmsAlert($alert);
+                    break;
+                case AlertType::SMS_MAIL:
+                    $this->sender->sendSmsAlert($alert);
+                    $this->sender->sendMailAlert($alert);
+                    break;
+            }
+        } catch (\Exception $e) {
+            if ($alert->getId() != 0) {
+                $this->logger->error(sprintf('Alert with ID %d not sent. Type : ', $alert->getId(), $alert->getType()));
+            }
         }
-
-        $alert->setSent(true);
-        $alert->setDate(new DateTime());
-
-        $this->em->persist($alert);
     }
 
     /**
-     * creates a sms alert
-     * @param type $to
-     * @param type $body
-     * @param type $from if null passed use default from configuration
-     * @param type $date if null passed the alert is send instantely
+     * Create a sms alert.
+     *
+     * @param string $to
+     * @param string $body
+     * @param null   $from If null passed use default from configuration
+     * @param null   $date If null passed the alert is send instantely
      */
-    public function createSmsAlert($to, $body, $from = null, $date = null) {
-        $alert = new Alert();
-        $alert->setType(AlertType::SMS);
-        $alert->setBody($body);
-        $alert->setFromF($from);
-        $alert->setSent(false);
-        $alert->setToSms($to);
-        $alert->setDate($date);
+    public function createSmsAlert(string $to, string $body, $from = null, $date = null)
+    {
+        $alert = $this->hydrateAlert(AlertType::SMS, $body, $to, null, null, $from, $date);
 
         if ($date == null) {
             $this->sendAlert($alert);
+            $alert->setSent(true);
+            $alert->setDate(new \DateTime());
         }
         $this->em->persist($alert);
         $this->em->flush();
     }
 
     /**
-     * create a mail alert
-     * @param type $to
-     * @param type $body
-     * @param type $subject
-     * @param type $from if null passed use default from configuration
-     * @param type $date if null passed the alert is send instantely
+     * Create a mail alert.
+     *
+     * @param string $to
+     * @param string $body
+     * @param string $subject
+     * @param null $from If null passed use default from configuration
+     * @param null $date If null passed the alert is send instantely
+     * @return Alert
      */
-    public function createMailAlert($to, $body, $subject, $from = null, $date = null) {
-        $alert = new Alert();
-        $alert->setType(AlertType::MAIL);
-        $alert->setBody($body);
-        $alert->setFromF($from);
-        $alert->setSent(false);
-        $alert->setSubject($subject);
-        $alert->setToMail($to);
-        $alert->setDate($date);
+    public function createMailAlert(string $to, string $body, string $subject, $from = null, $date = null)
+    {
+        $alert = $this->hydrateAlert(AlertType::MAIL, $body, null, $to, $subject, $from, $date);
 
         if ($date == null) {
             $this->sendAlert($alert);
+            $alert->setSent(true);
+            $alert->setDate(new \DateTime());
         }
         $this->em->persist($alert);
         $this->em->flush();
     }
-    
+
     /**
-     * send imédiate mail without historize it
-     * @param type $to
-     * @param type $body
-     * @param type $subject
-     * @param type $from if null passed use default from configuration
+     * Send imédiate mail without historize it.
+     *
+     * @param string $to
+     * @param string $body
+     * @param string $subject
+     * @param null   $from    If null passed use default from configuration
      */
-    public function sendMail($to, $body, $subject, $from = null) {
-        $this->sender->sendMail($to, $subject, $body, $from = null);
+    public function sendMail(string $to, string $body, string $subject, $from = null)
+    {
+        $this->sender->sendMail($to, $subject, $body, $from);
     }
 
     /**
-     * create a sms/mail alert
-     * @param type $toSms
-     * @param type $toMail
-     * @param type $body
-     * @param type $subject
-     * @param type $from if null passed use default from configuration
-     * @param type $date if null passed the alert is send instantely
+     * Create a sms/mail alert.
+     *
+     * @param      $toSms
+     * @param      $toMail
+     * @param      $body
+     * @param      $subject
+     * @param null $from    If null passed use default from configuration
+     * @param null $date    If null passed the alert is send instantely
      */
-    public function createSmsMailAlert($toSms, $toMail, $body, $subject, $from = null, $date = null) {
+    public function createSmsMailAlert($toSms, $toMail, $body, $subject, $from = null, $date = null)
+    {
+        $alert = $this->hydrateAlert(AlertType::SMS_MAIL, $body, $toSms, $toMail, $subject, $from, $date);
+
+        if ($date == null) {
+            $this->sendAlert($alert);
+            $alert->setSent(true);
+            $alert->setDate(new \DateTime());
+        }
+        $this->em->persist($alert);
+        $this->em->flush();
+    }
+
+    private function hydrateAlert($type, $body, $toSms = null, $toMail = null, $subject = null, $from = null, $date = null)
+    {
         $alert = new Alert();
-        $alert->setType(AlertType::SMS_MAIL);
+        $alert->setType($type);
         $alert->setBody($body);
         $alert->setFromF($from);
         $alert->setSent(false);
@@ -151,12 +181,6 @@ class AlertManager {
         $alert->setToMail($toMail);
         $alert->setDate($date);
 
-        if ($date == null) {
-            $this->sendAlert($alert);
-        } else {
-            $this->em->persist($alert);
-            $this->em->flush();
-        }
+        return $alert;
     }
-
 }

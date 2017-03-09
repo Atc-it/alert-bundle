@@ -1,14 +1,14 @@
 <?php
 
-namespace Atc\Bundle\AlertBundle\Enum;
-
+namespace Atc\AlertBundle\Enum;
 
 /**
- * types of alert
+ * types of alert.
  *
  * @author Augustin
  */
-abstract class AlertType {
+abstract class AlertType
+{
     const MAIL = 'MAIL';
     const SMS = 'SMS';
     const SMS_MAIL = 'SMS_MAIL';

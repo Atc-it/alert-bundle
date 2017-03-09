@@ -1,19 +1,20 @@
 <?php
 
-namespace Atc\Bundle\AlertBundle\Entity;
+namespace Atc\AlertBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use FM\CommandBundle\Entity\Command;
 
 /**
- * Alert
+ * Alert.
  *
  * @ORM\Table(name="`atc_alert`")
- * @ORM\Entity(repositoryClass="Atc\Bundle\AlertBundle\Entity\AlertRepository")
+ * @ORM\Entity(repositoryClass="Atc\AlertBundle\Entity\AlertRepository")
  */
 class Alert
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -85,6 +86,7 @@ class Alert
     public function setToSms($toSms)
     {
         $this->toSms = $toSms;
+
         return $this;
     }
 
@@ -96,6 +98,7 @@ class Alert
     public function setToMail($toMail)
     {
         $this->toMail = $toMail;
+
         return $this;
     }
 
@@ -107,6 +110,7 @@ class Alert
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
         return $this;
     }
 
@@ -118,6 +122,7 @@ class Alert
     public function setBody($body)
     {
         $this->body = $body;
+
         return $this;
     }
 
@@ -129,6 +134,7 @@ class Alert
     public function setFromF($fromF)
     {
         $this->fromF = $fromF;
+
         return $this;
     }
 
@@ -140,6 +146,7 @@ class Alert
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -148,21 +155,27 @@ class Alert
         return $this->type;
     }
 
-    function getDate() {
+    public function getDate()
+    {
         return $this->date;
     }
 
-    function getSent() {
+    public function getSent()
+    {
         return $this->sent;
     }
 
-    function setDate($date) {
+    public function setDate($date)
+    {
         $this->date = $date;
+
         return $this;
     }
 
-    function setSent($sent) {
+    public function setSent($sent)
+    {
         $this->sent = $sent;
+
         return $this;
     }
 

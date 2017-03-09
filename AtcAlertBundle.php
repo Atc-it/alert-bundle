@@ -1,6 +1,6 @@
 <?php
 
-namespace Atc\Bundle\AlertBundle;
+namespace Atc\AlertBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
